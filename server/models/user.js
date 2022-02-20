@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema(
         reviews: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Review'
+        }],
+        orders: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order'
         }]
     },
     {

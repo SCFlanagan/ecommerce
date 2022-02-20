@@ -4,14 +4,6 @@ const Product = require('./product');
 
 const reviewSchema = new mongoose.Schema(
     {
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        product: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product'
-        },
         rating: {
             type: Number,
             required: true,
@@ -19,18 +11,26 @@ const reviewSchema = new mongoose.Schema(
             max: 5
         },
         reviewContent: String,
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }
     },
     {
         timestamps: true
     }
 );
 
+// Delete from user review array ??? !!!  
 reviewSchema.pre('remove', async function (next) {
     try {
-        let user = await User.findById(this.userId);
-        user.message.remove(this.id);
+        let user = await User.findById(this.user);
+        user.reviews.remove(this.id);
         await user.save()
-        return next();
     } catch (err) {
         return next(err);
     }

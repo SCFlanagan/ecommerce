@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
+const { createReview, getReview, getReviews, deleteReview } = require('../handlers/reviews');
 
-const { createReview, getReview, deleteReview } = require('../handlers/reviews');
+router.route('/')
+    .get(getReviews)
+    .post(createReview);
 
-router.route('/').post(createReview);
-
-router
-    .route('/:reviewId')
+router.route('/:reviewId')
     .get(getReview)
     .delete(deleteReview);
 

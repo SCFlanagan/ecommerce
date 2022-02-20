@@ -1,6 +1,6 @@
 const db = require('../models');
 
-// POST - /api/users/:userId/reviews
+// POST - /api/users/:userId/products/:productId
 exports.createReview = async function (req, res, next) {
     try {
         let review = await db.Review.create({
@@ -15,12 +15,22 @@ exports.createReview = async function (req, res, next) {
             .populate('user', {
                 username: true,
                 profileImageUrl: true
+            })
+            .populate('product', {
+                name: true,
+                productImageUrl: true
             });
-        /*
-        .populate('product', {
-            name: true
-        }); */
         return res.status(200).json(foundReview)
+    } catch (err) {
+        return next(err);
+    }
+}
+
+// GET      /api/users/:userId/reviews
+exports.getReviews = async function (req, res, next) {
+    try {
+        const reviews = await db.Review.find({ user: req.params.userId });
+        return res.status(200).json(reviews);
     } catch (err) {
         return next(err);
     }
@@ -29,7 +39,7 @@ exports.createReview = async function (req, res, next) {
 // GET      /api/users/:userId/reviews/:reviewId
 exports.getReview = async function (req, res, next) {
     try {
-        let review = await db.Review.find(req.params.reviewId);
+        const review = await db.Review.find(req.params.reviewId);
         return res.status(200).json(review);
     } catch (err) {
         return next(err);

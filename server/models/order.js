@@ -12,7 +12,8 @@ const orderSchema = new mongoose.Schema(
                 ref: 'product'
             },
             quantity: Number
-        }]
+        }],
+        active: Boolean
     },
     {
         timestamps: true

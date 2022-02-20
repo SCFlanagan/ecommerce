@@ -5,6 +5,7 @@ const errorHandler = require('./handlers/error');
 const authRoutes = require('./routes/auth');
 const reviewsRoutes = require('./routes/reviews');
 const productsRoutes = require('./routes/products');
+const ordersRoutes = require('./routes/orders');
 const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
 
 const PORT = 3000;
@@ -14,6 +15,13 @@ app.use(express.json());
 
 // ROUTES
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productsRoutes);
+app.use(
+    '/api/users/:userId/orders',
+    loginRequired,
+    ensureCorrectUser,
+    ordersRoutes
+);
 
 
 /*
