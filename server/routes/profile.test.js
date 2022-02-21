@@ -19,12 +19,12 @@ describe('profile routes', () => {
     afterAll(async () => {
         let userIdMon = mongoose.Types.ObjectId(userId);
         const user = await db.User.findById(userIdMon);
-        if (user) await user.remove();
+        if (user) await user.deleteOne();
 
 
         let profileIdMon = mongoose.Types.ObjectId(profileId);
         const profile = await db.Profile.findById(profileIdMon);
-        if (profile) await profile.remove();
+        if (profile) await profile.deleteOne();
     });
 
     describe('/api/users/:userId/profile', () => {

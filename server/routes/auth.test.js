@@ -10,7 +10,7 @@ describe('auth routes', () => {
     afterAll(async () => {
         let userIdMon = mongoose.Types.ObjectId(userId);
         const user = await db.User.findById(userIdMon);
-        if (user) await user.remove();
+        if (user) await user.deleteOne();
     });
 
     describe('/api/auth/signup', () => {

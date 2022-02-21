@@ -71,7 +71,7 @@ module.exports.updateOrder = async function (req, res, next) {
 module.exports.deleteOrder = async function (req, res, next) {
     try {
         let order = await db.Order.findById(req.params.orderId);
-        await order.remove();
+        await order.deleteOne();
         return res.status(200).json(order);
     } catch (err) {
         return next(err);

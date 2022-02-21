@@ -82,7 +82,7 @@ exports.updateReview = async function (req, res, next) {
 exports.deleteReview = async function (req, res, next) {
     try {
         let review = await db.Review.findById(req.params.reviewId);
-        await review.remove();
+        await review.deleteOne();
         return res.status(200).json(review);
     } catch (err) {
         return next(err);

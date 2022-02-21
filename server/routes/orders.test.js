@@ -19,11 +19,11 @@ describe('order routes', () => {
     afterAll(async () => {
         let userIdMon = mongoose.Types.ObjectId(userId);
         const user = db.User.findById(userIdMon);
-        if (user) await user.remove();
+        if (user) await user.deleteOne();
 
         let orderIdMon = mongoose.Types.ObjectId(orderId);
         const order = db.Order.findById(orderIdMon);
-        if (order) await order.remove();
+        if (order) await order.deleteOne();
     });
 
     describe('/api/users/:userId/orders', () => {

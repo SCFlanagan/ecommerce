@@ -40,7 +40,7 @@ productSchema.pre('remove', async function (next) {
     try {
         let reviews = await db.Review.find({ product: this.id });
         reviews.forEach(review => {
-            review.remove();
+            review.deleteOne();
         });
     } catch (err) {
         return next(err);

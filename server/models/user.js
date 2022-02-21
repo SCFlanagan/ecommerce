@@ -88,7 +88,7 @@ userSchema.methods.addItemToShoppingCart = async function (productId, quantity) 
 userSchema.methods.removeItemFromShoppingList = async function (productId) {
     let index = this.shoppingCart.indexOf(productId);
     if (index > -1) {
-        this.shoppingCart[index].remove();
+        this.shoppingCart[index].deleteOne();
         this.save();
     } else {
         // Indicate that the product wasn't in the shopping cart !!!
@@ -110,7 +110,7 @@ userSchema.methods.addItemToFavoriteList = async function (productId) {
 userSchema.methods.removeItemFromFavoriteList = async function (productId) {
     let index = this.favoriteList.indexOf(productId);
     if (index > -1) {
-        this.favoriteList[index].remove();
+        this.favoriteList[index].deleteOne();
         this.save();
     } else {
         // Indicate that the product wasn't in the favorite list !!!

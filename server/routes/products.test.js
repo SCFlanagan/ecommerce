@@ -10,7 +10,7 @@ describe('product routes', () => {
     afterAll(async () => {
         let productIdMon = mongoose.Types.ObjectId(productId);
         const product = await db.Product.findById(productIdMon);
-        if (product) await product.remove();
+        if (product) await product.deleteOne();
     });
 
     describe('/api/products', () => {

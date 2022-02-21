@@ -20,7 +20,7 @@ exports.getUser = async function (req, res, next) {
 exports.deleteUser = async function (req, res, next) {
     try {
         const user = await db.User.findById(req.params.userId);
-        await user.remove();
+        await user.deleteOne();
         return res.status(200).send(user);
     } catch (err) {
         return next(err);

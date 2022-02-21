@@ -20,11 +20,11 @@ describe('reviews routes', () => {
     afterAll(async () => {
         let userIdMon = mongoose.Types.ObjectId(userId);
         const user = await db.User.findById(userIdMon);
-        if (user) await user.remove();
+        if (user) await user.deleteOne();
 
         let reviewIdMon = mongoose.Types.ObjectId(reviewId);
         const review = await db.Review.findById(reviewIdMon);
-        if (review) await review.remove();
+        if (review) await review.deleteOne();
     });
 
     describe('/api/users/:userId/reviews', () => {

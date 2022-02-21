@@ -31,11 +31,11 @@ const reviewSchema = new mongoose.Schema(
 reviewSchema.pre('remove', async function (next) {
     try {
         let user = await User.findById(this.user);
-        user.reviews.remove(this.id);
+        user.reviews.deleteOne(this.id);
         await user.save();
 
         let product = await Product.findById(this.product);
-        product.reviews.remove(this.id);
+        product.reviews.deleteOne(this.id);
         await product.save();
     } catch (err) {
         return next(err);

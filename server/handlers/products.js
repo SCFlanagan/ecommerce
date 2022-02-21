@@ -53,8 +53,9 @@ exports.updateProduct = async function (req, res, next) {
 exports.deleteProduct = async function (req, res, next) {
     try {
         let product = await db.Product.findById(req.params.productId);
-        product.remove();
-        product.save();
+        console.log('DELETED PRODUCT >>> ', product)
+        product.deleteOne();
+        //product.save();
         return res.status(200).json(product);
     } catch (err) {
         return next(err);
