@@ -1,16 +1,14 @@
 const app = require('../index');
 const db = require('../models');
 const request = require('supertest');
-const mongoose = require('mongoose');
+const { createDummyUser, deleteDummy } = require('../handlers/tests');
 
 let userId;
 
 describe('auth routes', () => {
 
     afterAll(async () => {
-        let userIdMon = mongoose.Types.ObjectId(userId);
-        const user = await db.User.findById(userIdMon);
-        if (user) await user.deleteOne();
+        await deleteDummy(userId, 'User');
     });
 
     describe('/api/auth/signup', () => {
@@ -19,7 +17,7 @@ describe('auth routes', () => {
                 .post('/api/auth/signup')
                 .send({
                     username: 'dummyuser',
-                    email: 'dummy@email.com',
+                    email: `authRoute@email.com`,
                     password: 'password'
                 });
             userId = response.body.id;
@@ -33,7 +31,7 @@ describe('auth routes', () => {
             let response = await request(app)
                 .post('/api/auth/signin')
                 .send({
-                    email: 'dummy@email.com',
+                    email: 'authRoute@email.com',
                     password: 'password'
                 });
             expect(response.status).toEqual(200);

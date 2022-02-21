@@ -4,6 +4,8 @@ const { createReview, getReview, getReviews, updateReview, deleteReview } = requ
 
 router.route('/')
     .get(getReviews)
+
+router.route('/:productId')
     .post(createReview);
 
 router.route('/:reviewId')

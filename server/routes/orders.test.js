@@ -1,29 +1,20 @@
 const app = require('../index');
 const db = require('../models');
 const request = require('supertest');
-const mongoose = require('mongoose');
+const { createDummyUser, deleteDummy } = require('../handlers/tests');
 
 let userId;
 let orderId;
 
 describe('order routes', () => {
     beforeAll(async () => {
-        const dummyUser = await db.User.create({
-            username: 'dummyuser',
-            email: 'dummy1@email.com',
-            password: 'password'
-        });
+        const dummyUser = await createDummyUser('orderRoute');
         userId = dummyUser.id;
     });
 
     afterAll(async () => {
-        let userIdMon = mongoose.Types.ObjectId(userId);
-        const user = db.User.findById(userIdMon);
-        if (user) await user.deleteOne();
-
-        let orderIdMon = mongoose.Types.ObjectId(orderId);
-        const order = db.Order.findById(orderIdMon);
-        if (order) await order.deleteOne();
+        await deleteDummy(userId, 'User');
+        await deleteDummy(orderId, 'Order');
     });
 
     describe('/api/users/:userId/orders', () => {

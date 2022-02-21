@@ -1,16 +1,14 @@
 const app = require('../index');
 const db = require('../models');
-const mongoose = require('mongoose');
 const request = require('supertest');
+const { deleteDummy } = require('../handlers/tests');
 
 let productId;
 
 describe('product routes', () => {
 
     afterAll(async () => {
-        let productIdMon = mongoose.Types.ObjectId(productId);
-        const product = await db.Product.findById(productIdMon);
-        if (product) await product.deleteOne();
+        await deleteDummy(productId, 'Product');
     });
 
     describe('/api/products', () => {
@@ -34,7 +32,7 @@ describe('product routes', () => {
                 .get('/api/products');
             expect(response.status).toEqual(200);
             expect(Array.isArray(response.body)).toBeTruthy();
-            expect(response.body[0].productName).toEqual('Shoes');
+            expect(Object.keys(response.body[0]).includes('productName')).toBeTruthy();
         });
     });
 

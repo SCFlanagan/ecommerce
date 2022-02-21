@@ -32,6 +32,15 @@ const productSchema = new mongoose.Schema(
     }
 );
 
+// When you delete a product, delete all its reviews
+productSchema.pre('deleteOne', async function (next) {
+    try {
+
+    } catch (err) {
+        return next(err);
+    }
+})
+
 
 // Delete from product reviews
 // Delete product from shopping carts and favorite lists

@@ -1,6 +1,6 @@
 const db = require('../models');
 
-//  POST    /api/users/:userId/reviews
+//  POST    /api/users/:userId/reviews/:productId
 //  Create a new review for a product by the current user
 //  Make this so you can only create one review per product ??? !!!
 exports.createReview = async function (req, res, next) {
@@ -16,10 +16,9 @@ exports.createReview = async function (req, res, next) {
         foundUser.reviews.push(review.id);
         await foundUser.save();
 
-        // !!!
-        /*let foundProduct = await db.Product.findById(req.params.productId);
+        let foundProduct = await db.Product.findById(req.params.productId);
         foundProduct.reviews.push(review.id);
-        await foundProduct.save();*/
+        await foundProduct.save();
 
         let foundReview = await db.Review.findById(review._id)
             .populate('user', {

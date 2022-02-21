@@ -1,30 +1,26 @@
 const app = require('../index');
 const request = require('supertest');
 const db = require('../models');
-const mongoose = require('mongoose');
+const { createDummyUser, createDummyProduct, deleteDummy } = require('../handlers/tests');
 
 let userId;
 let reviewId;
+let productId;
 
 describe('reviews routes', () => {
 
     beforeAll(async () => {
-        const dummyUser = await db.User.create({
-            username: 'dummyuser',
-            email: 'dummy4@email.com',
-            password: 'password'
-        });
+        const dummyUser = await createDummyUser('reviewRoute');
         userId = dummyUser.id;
+
+        const dummyProduct = await createDummyProduct();
+        productId = dummyProduct.id;
     });
 
     afterAll(async () => {
-        let userIdMon = mongoose.Types.ObjectId(userId);
-        const user = await db.User.findById(userIdMon);
-        if (user) await user.deleteOne();
-
-        let reviewIdMon = mongoose.Types.ObjectId(reviewId);
-        const review = await db.Review.findById(reviewIdMon);
-        if (review) await review.deleteOne();
+        await deleteDummy(userId, 'User');
+        await deleteDummy(reviewId, 'Review');
+        await deleteDummy(productId, 'Product');
     });
 
     describe('/api/users/:userId/reviews', () => {
@@ -37,9 +33,9 @@ describe('reviews routes', () => {
 
         test('create a new review for current user', async () => {
             const response = await request(app)
-                .post(`/api/users/${userId}/reviews`)
+                .post(`/api/users/${userId}/reviews/${productId}`)
                 .send({
-                    product: '6211c34aff0b2323a20beac6',
+                    product: productId,
                     rating: 5,
                     reviewContent: 'Good product'
                 });
