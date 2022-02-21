@@ -25,7 +25,9 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
+// Not working !!! 
 // Delete from user review array and product review array
+/*
 reviewSchema.pre('remove', async function (next) {
     try {
         let user = await User.findById(this.user);
@@ -39,6 +41,7 @@ reviewSchema.pre('remove', async function (next) {
         return next(err);
     }
 });
+*/
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

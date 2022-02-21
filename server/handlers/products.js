@@ -14,9 +14,9 @@ exports.getProducts = async function (req, res, next) {
 exports.createProduct = async function (req, res, next) {
     try {
         const newProduct = await db.Product.create(req.body);
-        let foundProduct = await db.Product.findById(newProduct._id)
+        let foundProduct = await db.Product.findById(newProduct.id)
             .populate('reviews');
-        return res.status(200).json(foundProduct)
+        return res.status(201).json(foundProduct)
     } catch (err) {
         return next(err);
     }
@@ -40,8 +40,8 @@ exports.getProduct = async function (req, res, next) {
 // PUT - /api/products/:productId
 exports.updateProduct = async function (req, res, next) {
     try {
-        await db.Product.findOneAndUpdate({ _id: req.params.productId }, req.body);
-        const updatedProduct = await db.Product.findById(req.params.productId);
+        const foundProduct = await db.Product.findOneAndUpdate({ _id: req.params.productId }, req.body);
+        const updatedProduct = await db.Product.findById(foundProduct.id);
         res.status(200).send(updatedProduct);
     } catch (err) {
         return next(err);
@@ -53,7 +53,8 @@ exports.updateProduct = async function (req, res, next) {
 exports.deleteProduct = async function (req, res, next) {
     try {
         let product = await db.Product.findById(req.params.productId);
-        await product.remove();
+        product.remove();
+        product.save();
         return res.status(200).json(product);
     } catch (err) {
         return next(err);

@@ -4,7 +4,8 @@ const orderSchema = new mongoose.Schema(
     {
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         },
         items: [{
             product: {
@@ -22,6 +23,8 @@ const orderSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+
+//  Need a method that connects profile to user on creation !!!
 
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

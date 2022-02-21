@@ -1,10 +1,10 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
+const mongoConnectionString = process.env.JEST_WORKER_ID ? process.env.TEST_MONGO_URI : process.env.MONGO_URI;
 
 mongoose.set('debug', true);
 mongoose.Promise = Promise;
 
-mongoose.connect('mongodb+srv://ecommerce:wg4t3zaC516aezqx@cluster0.ylvku.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect(mongoConnectionString,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true

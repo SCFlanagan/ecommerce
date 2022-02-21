@@ -1,5 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
+const PORT = process.env.PORT || 3000;
 const cors = require('cors');
 const errorHandler = require('./handlers/error');
 const authRoutes = require('./routes/auth');
@@ -9,7 +11,6 @@ const ordersRoutes = require('./routes/orders');
 const userRoutes = require('./routes/user');
 const profileRoutes = require('./routes/profile');
 const { loginRequired, ensureCorrectUser, isAdmin } = require('./middleware/auth');
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -17,10 +18,10 @@ app.use(express.json());
 // ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
-app.use('/api/users', loginRequired, ensureCorrectUser, userRoutes);
-app.use('/api/users/:userId/reviews', loginRequired, ensureCorrectUser, reviewsRoutes);
-app.use('/api/users/:userId/orders', loginRequired, ensureCorrectUser, ordersRoutes);
-app.use('/api/users/:userId/profile', loginRequired, ensureCorrectUser, profileRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/users/:userId/reviews', reviewsRoutes);
+app.use('/api/users/:userId/orders', ordersRoutes);
+app.use('/api/users/:userId/profile', profileRoutes);
 
 app.use((req, res, next) => {
     let err = new Error('Not Found');
@@ -30,8 +31,11 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
+
+/*
 app.listen(PORT, function () {
     console.log(`Server is starting on port ${PORT}`);
 });
+*/
 
 module.exports = app;

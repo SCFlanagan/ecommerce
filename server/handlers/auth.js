@@ -1,4 +1,3 @@
-require('dotenv').config();
 const db = require('../models');
 const jwt = require('jsonwebtoken');
 
@@ -13,7 +12,7 @@ exports.signup = async function (req, res, next) {
         },
             process.env.SECRET_KEY
         );
-        return res.status(200).json({
+        return res.status(201).json({
             id,
             username,
             token
@@ -30,7 +29,6 @@ exports.signup = async function (req, res, next) {
 }
 
 exports.signin = async function (req, res, next) {
-    console.log('req body: ', req.body)
     try {
         let user = await db.User.findOne({
             email: req.body.email

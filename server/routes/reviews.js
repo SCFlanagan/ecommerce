@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-const { createReview, getReview, getReviews, deleteReview } = require('../handlers/reviews');
+const { createReview, getReview, getReviews, updateReview, deleteReview } = require('../handlers/reviews');
 
 router.route('/')
     .get(getReviews)
@@ -8,6 +8,7 @@ router.route('/')
 
 router.route('/:reviewId')
     .get(getReview)
+    .put(updateReview)
     .delete(deleteReview);
 
 module.exports = router;

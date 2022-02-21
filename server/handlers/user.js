@@ -10,7 +10,7 @@ exports.getUser = async function (req, res, next) {
             .populate('shoppingCart')
             .populate('favoriteList')
             .populate('orders');
-        return res.status(200).json(foundProfile)
+        return res.status(200).json(user)
     } catch (err) {
         return next(err);
     }
@@ -19,9 +19,9 @@ exports.getUser = async function (req, res, next) {
 // PUT - /api/users/:userId
 exports.deleteUser = async function (req, res, next) {
     try {
-        let user = await db.User.findById(req.params.userId);
-        user.remove();
-        res.status(200).send(user);
+        const user = await db.User.findById(req.params.userId);
+        await user.remove();
+        return res.status(200).send(user);
     } catch (err) {
         return next(err);
     }

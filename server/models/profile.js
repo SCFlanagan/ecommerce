@@ -22,7 +22,9 @@ const profileSchema = new mongoose.Schema(
                     validator: (val) => !isNaN(val) && val.length === 5
                 }
             }
-        }
+        },
+        // Change to a date !!! 
+        birthDate: String
         // Add Payment Methods (number, name, security code, expiration date, billing address), 
     },
     {

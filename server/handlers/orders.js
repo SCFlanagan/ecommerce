@@ -21,12 +21,17 @@ exports.getOrders = async function (req, res, next) {
 module.exports.createOrder = async function (req, res, next) {
     try {
         const newOrder = await db.Order.create(req.body);
-        let foundOrder = await db.Product.findById(newOrder._id)
+        const foundOrder = await db.Order.findById(newOrder.id)
             .populate('items.product', {
                 productName: true,
-                productImageUrl: true
+                quantity: true
             });
-        return res.status(200).json(foundOrder)
+
+        let foundUser = await db.User.findById(req.params.userId);
+        foundUser.orders.push(newOrder.id);
+        await foundUser.save();
+
+        return res.status(201).json(foundOrder)
     } catch (err) {
         return next(err);
     }
@@ -43,7 +48,7 @@ module.exports.getOrder = async function (req, res, next) {
             });
         return res.status(200).json(order);
     } catch (err) {
-        re
+        return next(err);
     }
 }
 
@@ -53,8 +58,8 @@ module.exports.getOrder = async function (req, res, next) {
 // Update an order
 module.exports.updateOrder = async function (req, res, next) {
     try {
-        await db.Order.findOneAndUpdate({ _id: req.params.productId }, req.body);
-        const updatedOrder = await db.Order.findById(req.params.orderId);
+        const foundOrder = await db.Order.findOneAndUpdate({ _id: req.params.orderId }, req.body);
+        const updatedOrder = await db.Order.findById(foundOrder.id);
         res.status(200).send(updatedOrder);
     } catch (err) {
         return next(err);
