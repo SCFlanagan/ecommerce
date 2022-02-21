@@ -18,7 +18,12 @@ const userSchema = new mongoose.Schema(
         },
         profileImageUrl: {
             type: String,
+            // Get a bunch of avatars and randomize !!!
             default: 'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'
+        },
+        profile: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Profile'
         },
         reviews: [{
             type: mongoose.Schema.Types.ObjectId,
@@ -27,7 +32,19 @@ const userSchema = new mongoose.Schema(
         orders: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Order'
-        }]
+        }],
+        shoppingCart: [{
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product'
+            },
+            quantity: Number
+        }],
+        favoriteList: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }],
+        isAdmi: Boolean
     },
     {
         timestamps: true
@@ -53,6 +70,50 @@ userSchema.methods.comparePassword = async function (candidatePassword, next) {
         return isMatch;
     } catch {
         return next(err);
+    }
+}
+
+userSchema.methods.addItemToShoppingCart = async function (productId, quantity) {
+    let index = this.shoppingCart.indexOf(productId)
+    if (index > -1) {
+        this.shoppingCart[index].quantity += quantity;
+        this.save();
+    } else {
+        let item = { productId, quantity };
+        this.shoppingCart.push(item);
+        this.save();
+    }
+}
+
+userSchema.methods.removeItemFromShoppingList = async function (productId) {
+    let index = this.shoppingCart.indexOf(productId);
+    if (index > -1) {
+        this.shoppingCart[index].remove();
+        this.save();
+    } else {
+        // Indicate that the product wasn't in the shopping cart !!!
+    }
+}
+
+userSchema.methods.addItemToFavoriteList = async function (productId) {
+    let index = this.favoriteList.indexOf(productId)
+    if (index > -1) {
+        this.favoriteList.splice(index, 1);
+        this.favorite.push(productId);
+        this.save()
+    } else {
+        this.favoriteList.push(productId);
+        this.save();
+    }
+}
+
+userSchema.methods.removeItemFromFavoriteList = async function (productId) {
+    let index = this.favoriteList.indexOf(productId);
+    if (index > -1) {
+        this.favoriteList[index].remove();
+        this.save();
+    } else {
+        // Indicate that the product wasn't in the favorite list !!!
     }
 }
 

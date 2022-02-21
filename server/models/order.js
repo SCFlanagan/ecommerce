@@ -4,16 +4,19 @@ const orderSchema = new mongoose.Schema(
     {
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'User'
         },
         items: [{
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'product'
+                ref: 'Product'
             },
             quantity: Number
         }],
-        active: Boolean
+        total: Number,
+        // Payment and Billing Information !!!
+        // Shipping information !!!
+        status: String
     },
     {
         timestamps: true

@@ -6,9 +6,10 @@ const authRoutes = require('./routes/auth');
 const reviewsRoutes = require('./routes/reviews');
 const productsRoutes = require('./routes/products');
 const ordersRoutes = require('./routes/orders');
-const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
-
-const PORT = 3000;
+const userRoutes = require('./routes/user');
+const profileRoutes = require('./routes/profile');
+const { loginRequired, ensureCorrectUser, isAdmin } = require('./middleware/auth');
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -16,35 +17,10 @@ app.use(express.json());
 // ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
-app.use(
-    '/api/users/:userId/orders',
-    loginRequired,
-    ensureCorrectUser,
-    ordersRoutes
-);
-
-
-/*
-app.use(
-    '/api/users/:userId/reviews',
-    loginRequired,
-    ensureCorrectUser,
-    reviewsRoutes);
-app.use('/api/reviews', reviewsroutes);
-
-app.get('/api/reviews', loginRequired, async function (req, res, next) {
-    try {
-        let messages = await db.Message.find()
-            .sort({ createdAt: 'desc' })
-            .populate('user', {
-                username: true,
-                profileImageUrl: true
-            });
-        return res.status(200).json(messages);
-    } catch (err) {
-        return next(err);
-    }
-}); */
+app.use('/api/users', loginRequired, ensureCorrectUser, userRoutes);
+app.use('/api/users/:userId/reviews', loginRequired, ensureCorrectUser, reviewsRoutes);
+app.use('/api/users/:userId/orders', loginRequired, ensureCorrectUser, ordersRoutes);
+app.use('/api/users/:userId/profile', loginRequired, ensureCorrectUser, profileRoutes);
 
 app.use((req, res, next) => {
     let err = new Error('Not Found');

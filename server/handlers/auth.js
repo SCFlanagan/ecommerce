@@ -30,6 +30,7 @@ exports.signup = async function (req, res, next) {
 }
 
 exports.signin = async function (req, res, next) {
+    console.log('req body: ', req.body)
     try {
         let user = await db.User.findOne({
             email: req.body.email

@@ -1,42 +1,60 @@
 const db = require('../models');
 
-// POST - /api/users/:userId/products/:productId
+//  POST    /api/users/:userId/reviews
+//  Create a new review for a product by the current user
+//  Make this so you can only create one review per product ??? !!!
 exports.createReview = async function (req, res, next) {
     try {
         let review = await db.Review.create({
             rating: req.body.rating,
             reviewContent: req.body.reviewContent,
-            user: req.params.userId
+            user: req.params.userId,
+            product: req.params.productId
         });
+
         let foundUser = await db.User.findById(req.params.userId);
         foundUser.reviews.push(review.id);
         await foundUser.save();
+
+        let foundProduct = await db.Product.findById(req.params.productId);
+        foundProduct.reviews.push(review.id);
+        await foundProduct.save();
+
         let foundReview = await db.Review.findById(review._id)
             .populate('user', {
                 username: true,
                 profileImageUrl: true
             })
             .populate('product', {
-                name: true,
-                productImageUrl: true
+                productName: true
             });
-        return res.status(200).json(foundReview)
+        return res.status(200).json(foundReview);
     } catch (err) {
         return next(err);
     }
 }
 
-// GET      /api/users/:userId/reviews
+//  GET     /api/users/:userId/reviews
+//  Get all reviews written by the current user
 exports.getReviews = async function (req, res, next) {
     try {
-        const reviews = await db.Review.find({ user: req.params.userId });
+        const reviews = await db.Review.find({ user: req.params.userId })
+            .sort({ createdAt: 'desc' })
+            .populate('user', {
+                username: true,
+                profileImageUrl: true
+            })
+            .populate('product', {
+                productName: true
+            });
         return res.status(200).json(reviews);
     } catch (err) {
         return next(err);
     }
 }
 
-// GET      /api/users/:userId/reviews/:reviewId
+//  GET     /api/users/:userId/reviews/:reviewId
+//  Get a single review by the current user
 exports.getReview = async function (req, res, next) {
     try {
         const review = await db.Review.find(req.params.reviewId);
@@ -46,12 +64,25 @@ exports.getReview = async function (req, res, next) {
     }
 }
 
-// DELETE   /api/users/:userId/reviews
+//  DELETE  /api/users/:userId/reviews/:reviewId
+//  Delete a single review by the current user
 exports.deleteReview = async function (req, res, next) {
     try {
         let foundReview = await db.Review.findById(req.params.reviewId);
         await foundReview.remove();
         return res.status(200).json(foundReview);
+    } catch (err) {
+        return next(err);
+    }
+}
+
+//  PUT     /api/users/:userId/reviews/:reviewId
+//  Edit a single review by the current user
+exports.updateReview = async function (req, res, next) {
+    try {
+        let foundReview = await db.Review.findOneAndUpdate({ _id: req.params.reviewId }, req.body);
+        const updatedReview = await db.Review.findById(foundReview._id);
+        res.status(200).send(updatedReview);
     } catch (err) {
         return next(err);
     }

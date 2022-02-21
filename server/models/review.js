@@ -25,12 +25,16 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
-// Delete from user review array ??? !!!  
+// Delete from user review array and product review array
 reviewSchema.pre('remove', async function (next) {
     try {
         let user = await User.findById(this.user);
         user.reviews.remove(this.id);
-        await user.save()
+        await user.save();
+
+        let product = await Product.findById(this.product);
+        product.reviews.remove(this.id);
+        await product.save();
     } catch (err) {
         return next(err);
     }

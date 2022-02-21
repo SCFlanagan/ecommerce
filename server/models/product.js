@@ -4,7 +4,7 @@ const imageUrl = 'https://st4.depositphotos.com/14953852/24787/v/600/depositphot
 
 const productSchema = new mongoose.Schema(
     {
-        name: {
+        prouctName: {
             type: String,
             required: true
         },
@@ -30,6 +30,19 @@ const productSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+
+// Delete from product reviews
+// Delete product from shopping carts and favorite lists
+productSchema.pre('remove', async function (next) {
+    try {
+        let reviews = await db.Reviews.find({ product: this.id });
+        reviews.forEach(review => {
+            review.remove();
+        });
+    } catch (err) {
+        return next(err);
+    }
+});
 
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

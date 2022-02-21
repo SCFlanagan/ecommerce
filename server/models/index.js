@@ -20,7 +20,5 @@ db.once("open", function () {
 module.exports.User = require('./user');
 module.exports.Review = require('./review');
 module.exports.Product = require('./product');
-module.exports.ShoppingCart = require('./shoppingcart');
 module.exports.Profile = require('./profile');
 module.exports.Order = require('./order');
-module.exports.FavoriteList = require('./favoritelist');

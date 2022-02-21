@@ -26,6 +26,11 @@ exports.createProduct = async function (req, res, next) {
 exports.getProduct = async function (req, res, next) {
     try {
         const product = await db.Product.findById(req.params.productId)
+            .populate('reviews', {
+                rating: true,
+                reviewContent: true,
+                user: true
+            });
         return res.status(200).json(product);
     } catch (err) {
         return next(err);
@@ -47,9 +52,9 @@ exports.updateProduct = async function (req, res, next) {
 // Only allow this if user is an admin ??? !!!
 exports.deleteProduct = async function (req, res, next) {
     try {
-        let foundProduct = await db.Product.findById(req.params.productId);
-        await foundProduct.remove();
-        return res.status(200).json(foundProduct);
+        let product = await db.Product.findById(req.params.productId);
+        await product.remove();
+        return res.status(200).json(product);
     } catch (err) {
         return next(err);
     }

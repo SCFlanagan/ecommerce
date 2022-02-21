@@ -10,12 +10,12 @@ exports.loginRequired = function (req, res, next) {
             } else {
                 return next({
                     status: 401,
-                    message: 'Please log in first'
+                    message: 'You must log in first'
                 });
             }
         });
     } catch (err) {
-        return next({ status: 401, message: 'Please log in first' });
+        return next({ status: 401, message: 'You must log in first' });
     }
 }
 
@@ -32,6 +32,17 @@ exports.ensureCorrectUser = function (req, res, next) {
                 });
             }
         });
+    } catch (err) {
+        return next({
+            status: 401,
+            message: 'Unauthorized'
+        });
+    }
+}
+
+exports.isAdmin = function (req, res, next) {
+    try {
+        // Test if user is an admin !!!
     } catch (err) {
         return next({
             status: 401,

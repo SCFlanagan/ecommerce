@@ -2,20 +2,32 @@ const db = require('../models');
 
 // GET  /api/users/:userId/orders
 // Gets all orders for current user
-module.exports.getOrders = async function (req, res, next) {
+exports.getOrders = async function (req, res, next) {
     try {
-
-    } catch {
+        const orders = await db.Order.find({ user: req.params.userId })
+            .sort({ createdAt: 'desc' })
+            .populate('items.product', {
+                productName: true,
+                productImageUrl: true
+            });
+        return res.status(200).json(orders);
+    } catch (err) {
         return next(err);
     }
 }
 
 // POST  /api/users/:userId/orders
-// Creates a new order for current user
+// Creates a new order
 module.exports.createOrder = async function (req, res, next) {
     try {
-
-    } catch {
+        const newOrder = await db.Order.create(req.body);
+        let foundOrder = await db.Product.findById(newOrder._id)
+            .populate('items.product', {
+                productName: true,
+                productImageUrl: true
+            });
+        return res.status(200).json(foundOrder)
+    } catch (err) {
         return next(err);
     }
 }
@@ -24,12 +36,16 @@ module.exports.createOrder = async function (req, res, next) {
 // Gets a single order for current user
 module.exports.getOrder = async function (req, res, next) {
     try {
-
-    } catch {
-        return next(err);
+        const order = await db.Order.findById(req.params.orderId)
+            .populate('items.product', {
+                productName: true,
+                productImageUrl: true
+            });
+        return res.status(200).json(order);
+    } catch (err) {
+        re
     }
 }
-
 
 // ONLY ADMIN FUNCTIONALITY
 
@@ -37,8 +53,10 @@ module.exports.getOrder = async function (req, res, next) {
 // Update an order
 module.exports.updateOrder = async function (req, res, next) {
     try {
-
-    } catch {
+        await db.Order.findOneAndUpdate({ _id: req.params.productId }, req.body);
+        const updatedOrder = await db.Order.findById(req.params.orderId);
+        res.status(200).send(updatedOrder);
+    } catch (err) {
         return next(err);
     }
 }
@@ -47,8 +65,10 @@ module.exports.updateOrder = async function (req, res, next) {
 // Delete an order
 module.exports.deleteOrder = async function (req, res, next) {
     try {
-
-    } catch {
+        let order = await db.Order.findById(req.params.orderId);
+        await order.remove();
+        return res.status(200).json(order);
+    } catch (err) {
         return next(err);
     }
 }
